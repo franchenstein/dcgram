@@ -54,3 +54,52 @@ def calc_probs(X, L):
     print("Probabilities calculated!")
     print("*****************")
     return [probabilities, alphabet]
+
+'''
+Name: calc_cond_probs
+Input:
+    *L: maximum sub-sequence length to be analyzed.
+Output: 
+    *conditional_probabilities: a list of dictionaries. Each dictionary 
+     contains keys that are of the form:
+     symbol|subsequence
+     meaning the probability of "symbol" occuring after that subsequence.
+     There is one dictionary for each length of subsequence.
+Description:
+    Calculates the probability of each symbol in alphabet occuring each
+    subsequence in probabilities and create a similiar dictionary for those
+    conditional probabilities.
+'''     
+def calc_cond_probs(probabilities, alphabet, L):
+    #Output initialized as empty list:
+    conditional_probabilities = []
+    print("Calculating subsequence conditional probabilities")
+    print("L = " + str(L))
+    if probabilities:
+        #The first element, i.e. the probabilities of each symbol given the
+        #empty string is just the probabilities of the occurence of those
+        #symbols, i.e. the first element of the probabilities list.
+        conditional_probabilities = [probabilities[0]]
+        #This loop calculates the conditional probabilities of subsquences of
+        #length greater than 0 given each symbol in the alphabet:
+        for l in range(0, L):
+            print("Calculating conditional probabilities of subsequences of length: " + str(l))
+            d = {}
+            l1 = probabilities[l]
+            l2 = probabilities[l+1]
+            for s in l1:
+                for a in alphabet:
+                    cond = a + "|" + s
+                    t = s + a
+                    if t in l2.keys():
+                        d[cond] = l2[t]/l1[s]
+                    else:
+                        d[cond] = 0.0
+            conditional_probabilities.append(d)
+    else:
+        print("Probabilities not computed.")
+        print("Run calc_probs function before this one.")
+    print("*****************")
+    print("Conditional probabilities calculated!")
+    print("*****************")
+    return conditional_probabilities
