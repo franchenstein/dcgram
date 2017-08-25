@@ -58,6 +58,8 @@ def calc_probs(X, L):
 '''
 Name: calc_cond_probs
 Input:
+    *probabilities: the sub-sequence probabilities of the original sequence;
+    *alphabet: the set of unique symbols appearing in the original sequence; 
     *L: maximum sub-sequence length to be analyzed.
 Output: 
     *conditional_probabilities: a list of dictionaries. Each dictionary 
@@ -84,17 +86,32 @@ def calc_cond_probs(probabilities, alphabet, L):
         #length greater than 0 given each symbol in the alphabet:
         for l in range(0, L):
             print("Calculating conditional probabilities of subsequences of length: " + str(l))
+            #Initialization of the empty dictionary for the current l:
             d = {}
+            #l1 holds the probabilities of the layer l
             l1 = probabilities[l]
+            #while l2 holds the probs of the layer l + 1
             l2 = probabilities[l+1]
+            #loops for each subsequence s in the layer l:
             for s in l1:
+                #loops for each symbol a in the alphabet:
                 for a in alphabet:
+                    #The string cond, a|s, means symbol a given subsequence s
                     cond = a + "|" + s
+                    #t holds the subsequence s concatenated with a, which should
+                    #be present in l2
                     t = s + a
+                    #if t is a key in l2, i.e. it was present in the original 
+                    #sequence:
                     if t in l2.keys():
+                        #The probability of a given s is computed as the prob
+                        #of t divided by the prob of s:
                         d[cond] = l2[t]/l1[s]
                     else:
+                        #If not, the probability is simply zero:
                         d[cond] = 0.0
+            #The conditional probability dictionary of the current layer is 
+            #added to the output list:
             conditional_probabilities.append(d)
     else:
         print("Probabilities not computed.")
